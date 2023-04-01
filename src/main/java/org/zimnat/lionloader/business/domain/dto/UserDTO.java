@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zimnat.lionloader.business.domain.BaseName;
 import org.zimnat.lionloader.business.domain.Privilege;
 import org.zimnat.lionloader.business.domain.Role;
 import org.zimnat.lionloader.business.domain.User;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class UserDTO {
     private String id;
-    private String username;
+    private String userName;
     private String firstName;
     private String lastName;
     private UserLevel userLevel;
@@ -44,13 +45,13 @@ public class UserDTO {
         this.id = user.getId();
         this.token=token;
         this.active=user.getActive();
-        this.username = user.getUserName();
+        this.userName = user.getUserName();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.userLevel = user.getUserLevel();
         this.dateCreated = user.getDateCreated();
-        this.roles = user.getRoles().stream().map(role -> role.getName()).toList();
-        this.privileges = user.getRoles().stream().map(role -> role.getPrivileges().stream().map(p->p.getName()).collect(Collectors.joining(","))).collect(Collectors.toList());
+        this.roles = user.getRoles().stream().map(BaseName::getName).toList();
+        this.privileges = user.getRoles().stream().map(role -> role.getPrivileges().stream().map(BaseName::getName).collect(Collectors.joining(","))).collect(Collectors.toList());
     }
 
     public User createFromDTO(){
@@ -58,10 +59,9 @@ public class UserDTO {
             user.setFirstName(this.firstName);
             user.setLastName(this.lastName);
             user.setUserLevel(this.userLevel);
-            user.setRoles(this.roles.stream().map(r->roleService.getByName(r)).collect(Collectors.toSet()));
             user.setPassword(this.password);
             user.setDateCreated(new Date());
-            user.setUserName(this.username);
+            user.setUserName(this.userName);
             user.setActive(Boolean.TRUE);
             return user;
     }

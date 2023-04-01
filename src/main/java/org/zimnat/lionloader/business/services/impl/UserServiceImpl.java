@@ -77,11 +77,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User Save(User u, User editor) {
-        User t=get(u.getId());
+    public User Save(User t, User editor) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashedPassword = encoder.encode(t.getPassword());
-        t.setPassword(hashedPassword);
+        if(t.getPassword()!=null && !t.getPassword().isEmpty()) {
+            String hashedPassword = encoder.encode(t.getPassword());
+            t.setPassword(hashedPassword);
+        }
         t.setCreatedBy(editor.getUserName());
         t.setDateCreated(new Date());
         t.setId(UUID.randomUUID().toString());
@@ -94,7 +95,6 @@ public class UserServiceImpl implements UserService {
     public User changePassword(User u, User editor) {
         User t=get(u.getId());
         String hashedPassword = passwordEncoder.encode(t.getPassword());
-        System.err.println("HASHED::"+hashedPassword+" => Compared::"+passwordEncoder.matches(u.getPassword(),t.getPassword()));
         t.setPassword(hashedPassword);
         t.setModifiedBy(editor.getUserName());
         t.setDateModified(new Date());
