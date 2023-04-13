@@ -12,5 +12,7 @@ public interface Constants {
 
     public final String USER_ROLE_CONSTANT = "left join fetch p.createdBy left join fetch p.modifiedBy ";
 
+    public  static final String DEFAULT_PASSWORD="Password@123";
+
 
 }

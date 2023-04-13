@@ -15,4 +15,5 @@ public interface PrivilegeRepo extends JpaRepository<Privilege, String> {
 
 
     List<Privilege> findAllByRolesIn(List<Role> role);
+    Privilege getByName(String name);
 }

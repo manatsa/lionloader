@@ -12,6 +12,7 @@ import org.zimnat.lionloader.business.domain.dto.ChangePasswordDTO;
 import org.zimnat.lionloader.business.domain.dto.UserDTO;
 import org.zimnat.lionloader.business.services.RoleService;
 import org.zimnat.lionloader.business.services.UserService;
+import org.zimnat.lionloader.utils.Constants;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  */
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     UserService userService;
@@ -37,8 +38,6 @@ public class UserController {
     @GetMapping("/")
     public List<User> getAllUsers(){
         List<User> users= userService.getAll();
-
-        System.err.println(users);
         return users.stream().peek(user ->{
             user.setActiveString(user.getActive().toString());
             user.setRoleString(user.getRoles().stream().map(BaseName::getName).collect(Collectors.joining(",")));
@@ -51,11 +50,11 @@ public class UserController {
         try {
 
             User user = userDTO.createFromDTO();
+            user.setPassword(Constants.DEFAULT_PASSWORD);
             user.setRoles(userDTO.getRoles().stream().map(r->roleService.getByName(r)).collect(Collectors.toSet()));
-            System.err.println(user);
             User currentUser = userService.getCurrentUser();
             user = userService.Save(user, currentUser);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(userService.getAll());
         }catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.status(500).body(e);
@@ -64,10 +63,9 @@ public class UserController {
 
     @PostMapping("/changePassword")
     public ResponseEntity<?> changeUserPassword(@RequestBody ChangePasswordDTO changePasswordDTO){
-        User currentuser=userService.getCurrentUser();
+        User currentUser=userService.getCurrentUser();
         User user=userService.get(changePasswordDTO.getUserId());
-        userService.changePassword(user, currentuser);
-        System.err.println("User ::"+currentuser.getUserName()+" has change password for user:: "+user.getUserName()+" on ::"+new Date());
+        userService.changePassword(user, currentUser);
         return  ResponseEntity.ok("Password changed successfully!");
     }
 

@@ -39,6 +39,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
+    public Privilege getByName(String name) {
+        return privilegeRepo.getByName(name);
+    }
+
+    @Override
     public Privilege save(Privilege t) {
         t.setCreatedBy(userService.get(userService.getCurrentUser().getId()));
         t.setId(UUID.randomUUID().toString());

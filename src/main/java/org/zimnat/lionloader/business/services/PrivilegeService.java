@@ -13,6 +13,7 @@ import java.util.List;
 public interface PrivilegeService {
 
     public Privilege get(String id);
+    public Privilege getByName(String name);
     public Privilege save(Privilege userRole);
 
     public Privilege update(Privilege userRole);

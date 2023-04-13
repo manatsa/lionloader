@@ -15,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "privilege")
 public class Privilege extends BaseName {
 

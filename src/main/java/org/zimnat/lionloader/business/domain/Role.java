@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "role")
-//@ToString(exclude = {"users", "privileges"}, callSuper = false)
+@ToString
 public class Role extends BaseName {
 
     @Transient
@@ -32,13 +32,12 @@ public class Role extends BaseName {
             @JoinColumn(name = "privilege_id", nullable = false)})
     private Set<Privilege> privileges = new HashSet<>();
 
+    @Transient
+    private String privilegeString;
+
     public String getPrintName(){
         return StringUtils.toCamelCase3(super.getName());
     }
 
-    @Override
-    public String toString(){
-        return getPrintName();
-    }
 
 }

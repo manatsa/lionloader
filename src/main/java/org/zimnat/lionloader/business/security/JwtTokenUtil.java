@@ -43,11 +43,14 @@ public class JwtTokenUtil implements Serializable {
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
+        if(claims==null){
+            return  null;
+        }
         return claimsResolver.apply(claims);
     }
     //for retrieveing any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        if(token==null || token.isEmpty()){
+        if(token==null || token.isEmpty() || token.length()<1 || token.split("\\.").length<2 ){
             return null;
         }
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();

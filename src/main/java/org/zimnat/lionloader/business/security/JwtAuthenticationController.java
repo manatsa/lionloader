@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.zimnat.lionloader.business.domain.User;
 import org.zimnat.lionloader.business.domain.dto.UserDTO;
@@ -36,10 +37,15 @@ public class JwtAuthenticationController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
 
     @RequestMapping(value = "authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+//        String hashed=passwordEncoder.encode(authenticationRequest.getPassword());
+//        System.err.println("Password::"+hashed);
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
@@ -48,7 +54,6 @@ public class JwtAuthenticationController {
         System.err.println(authenticationRequest.getUsername()+" has logged in.........> Date: "+new Date());
         User user=userService.findByUserName(authenticationRequest.getUsername());
         UserDTO userDTO=new UserDTO(user, token);
-        System.err.println(userDTO);
         return ResponseEntity.ok(userDTO);
     }
 

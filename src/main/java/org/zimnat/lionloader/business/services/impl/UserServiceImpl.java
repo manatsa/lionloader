@@ -113,7 +113,6 @@ public class UserServiceImpl implements UserService {
             target.setCreatedBy(editor.getUserName());
             target.setDateModified(new Date());
             User u =entityManager.merge(target);
-            System.err.println(u);
             return u;
         }
 
