@@ -5,11 +5,15 @@ import AppFooterBar from "./AppFooterBar.jsx";
 const Layout =({children})=>{
     return (
         <>
-            <AppMenuBar/>
-            <div style={{width:'100%', paddingLeft:20, paddingRight:20, }}>
-                {children}
+
+            <div className={'surface-300'} style={{width:'100%'}}>
+                <AppMenuBar/>
+                <div align={'center'} className={'surface-300'} style={{width:'100%'}} >
+                    {children}
+                </div>
+                <AppFooterBar/>
             </div>
-            <AppFooterBar/>
+
 
         </>
     )

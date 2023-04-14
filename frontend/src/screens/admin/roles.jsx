@@ -17,6 +17,7 @@ import {InputText} from "primereact/inputtext";
 import {Dialog} from "primereact/dialog";
 import {Typography} from "@mui/material";
 import EditRoleDialog from "./edit.role.dialog.jsx";
+import {useFetch} from "../../hooks/useFetch.js";
 
 const Roles =  () => {
 
@@ -28,6 +29,7 @@ const Roles =  () => {
     const [selectedRole, setSelectedRole] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [openNewRoleDialog, setOpenNewRoleDialog] = useState(null);
+    const [openViewRoleDialog, setOpenViewRoleDialog] = useState(null);
     const [roles, setRoles]=useState([]);
     const dt = useRef(null);
     const cm = useRef(null);
@@ -36,25 +38,22 @@ const Roles =  () => {
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] }
     });
 
-    if(!token || isExpired ){
-        navigate("/")
-    }else if(!login?.privileges?.includes('ADMIN')){
-        showToast(toast,'error','Error 401: Access Denied','You do not have access to this resource!');
-        window.history.back();
-    }
+    useEffect(()=>{
+        if(!token || isExpired ){
+            navigate("/")
+        }else if(!login?.privileges?.includes('ADMIN')){
+            showToast(toast,'error','Error 401: Access Denied','You do not have access to this resource!');
+            window.history.back();
+        }
 
-    const viewRole = (role) => {
-        toast.current.show({ severity: 'info', summary: 'role Selected', detail: role.name });
+    })
+
+    const viewRole = () => {
+        setOpenViewRoleDialog(true)
+        toast.current.show({ severity: 'info', summary: 'role Selected', detail: selectedRole.name });
     };
 
-    const pullData=async ()=>{
-        const r= await GetFromAPI(token, 'api/roles/', setIndicator);
-        setRoles(r)
-        return r;
-    }
-    useEffect( ()=>{
-        const data=pullData();
-    },[])
+    const {data, error, isError, isLoading }=useFetch('/api/roles/',token,'get-roles');
 
     const cols = [
         { field: 'id', header: 'ID' },
@@ -65,14 +64,12 @@ const Roles =  () => {
 
     ];
 
-    const editRole = (role) => {
-        setSelectedRole(role)
+    const editRole = () => {
         setOpenNewRoleDialog(true)
-        toast.current.show({ severity: 'info', summary: 'role edited', detail: role.name });
     };
 
-    const deleteRole = (role) => {
-        toast.current.show({ severity: 'info', summary: 'role deleted', detail: role.name });
+    const deleteRole = () => {
+        toast.current.show({ severity: 'info', summary: 'role deleted', detail: selectedRole.name });
     };
 
     const openNew=()=>{
@@ -92,7 +89,7 @@ const Roles =  () => {
     const renderHeader = () => {
         return (
             <div className={'flex flex-row justify-content-between'}>
-                <h2 className="m-0">User List</h2>
+                <h2 className="m-0">Roles List</h2>
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
                     <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" variant={'standard'}/>
@@ -102,9 +99,9 @@ const Roles =  () => {
     };
 
     const menuModel = [
-        { label: 'View', icon: 'pi pi-fw pi-hourglass', command: () => viewRole(selectedRole) },
-        { label: 'Edit', icon: 'pi pi-fw pi-pencil', command: () => editRole(selectedRole) },
-        { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => deleteRole(selectedRole) }
+        { label: 'View', icon: 'pi pi-fw pi-hourglass', command: () => viewRole() },
+        { label: 'Edit', icon: 'pi pi-fw pi-pencil', command: () => editRole() },
+        { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => deleteRole() }
     ];
 
     const exportColumns = cols.map((col) => ({ title: col.header, dataKey: col.field }));
@@ -124,8 +121,6 @@ const Roles =  () => {
         });
     };
 
-
-
     const leftToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
@@ -143,17 +138,15 @@ const Roles =  () => {
             </div>)
     };
 
-
-
     return (
         <>
             <Toast ref={toast} position={'center'} />
-            {indicator && <div className="card flex justify-content-center"> <ProgressSpinner style={{zIndex:1000}}/></div>}
+            {isLoading && <div className="card flex justify-content-center"> <ProgressSpinner style={{zIndex:1000}}/></div>}
             <div className="card">
                 <Tooltip target=".export-buttons>button" position="bottom" />
-                <ContextMenu model={menuModel} ref={cm} onHide={() => setSelectedRole(null)} />
+                <ContextMenu model={menuModel} ref={cm} onHide={()=>null} />
                 <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}/>
-                <DataTable ref={dt} value={roles}  tableStyle={{ minWidth: '50rem' }} paginator={true} rows={10} header={renderHeader}
+                <DataTable ref={dt} value={data}  tableStyle={{ minWidth: '50rem' }} paginator={true} rows={10} header={renderHeader}
                            filters={filters} filterDisplay="menu" globalFilterFields={['name', 'privileges',  'active', 'dateCreated']}
                            onContextMenu={(e) => cm.current.show(e.originalEvent)} stripedRows={true}
                            rowsPerPageOptions={[10, 25, 50]} dataKey="id" resizableColumns showGridlines
@@ -172,8 +165,22 @@ const Roles =  () => {
                             {selectedRole && selectedRole?.id ? selectedRole?.name:"New Role"}
                         </Typography>
                     </div>
-                }} visible={openNewRoleDialog} style={{ width: '60vw' }} onHide={() => setOpenNewRoleDialog(false)}>
+                }} visible={openNewRoleDialog} style={{ width: '70vw' }} onHide={() => setOpenNewRoleDialog(false)}>
+                    {
+                        console.log(selectedRole)
+                    }
                     <EditRoleDialog role={selectedRole} setEditUserDialogVisible={setOpenNewRoleDialog} openNewUserDialog={openNewRoleDialog}/>
+                </Dialog>
+
+                <Dialog header={()=>{
+                    return <div style={{textDecoration:'underline', textDecorationColor:'forestgreen', paddingLeft:20, paddingRight:10}}>
+                        <Typography component="h1" variant="h3" color={'green'}>
+                            {selectedRole && selectedRole?.id ? selectedRole?.name:"Selected Role"}
+                        </Typography>
+                    </div>
+                }} visible={openViewRoleDialog} style={{ width: '60vw' }} onHide={() => setOpenViewRoleDialog(false)}>
+                    {/*<EditRoleDialog role={selectedRole} setEditUserDialogVisible={setOpenNewRoleDialog} openNewUserDialog={openNewRoleDialog}/>*/}
+                    <div>Viewing Role {JSON.stringify(selectedRole)}</div>
                 </Dialog>
 
             </div>

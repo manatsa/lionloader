@@ -6,6 +6,15 @@ export const LoginContextProvider = ({ children }) => {
     const [token, setToken] = useState();
     const [login, setLogin] = useState();
 
+    const stored=localStorage.getItem('token')
+    if(token && (!stored || stored?.length<1)){
+        localStorage.setItem('token', token);
+    }
+
+    if(!token && stored){
+        setToken(stored);
+    }
+
     const value = {
         token,
         setToken,

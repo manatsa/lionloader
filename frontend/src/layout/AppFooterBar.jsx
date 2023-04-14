@@ -23,7 +23,7 @@ const endContent = <>
 
 return (
     <div className="card" style={{position:'fixed', bottom:0, width:'100%'}}>
-        <Menubar  start={start} end={endContent} style={{border:'0.1px solid forestgreen', color: 'forestgreen', marginLeft:0, marginRight:0}} />
+        <Menubar  start={start} end={endContent} style={{border:'0.1px solid forestgreen', color: 'forestgreen', margin:'2%'}} />
     </div>
 )
 }

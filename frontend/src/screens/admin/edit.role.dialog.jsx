@@ -25,6 +25,7 @@ const EditRoleDialog = ({openNewRoleDialog,setEditRoleDialogVisible, role}) =>{
     const[indicator, setIndicator]=useState(false);
     const [privileges, setPrivileges] = useState([]);
 
+   console.log(JSON.stringify(role))
     const pullData=async ()=>{
         const res= await GetFromAPI(token, 'api/privileges/', setIndicator);
         setPrivileges(res?.map(r=>{
@@ -96,17 +97,17 @@ const EditRoleDialog = ({openNewRoleDialog,setEditRoleDialogVisible, role}) =>{
                         {getFormErrorMessage('name')}
                     </div>
 
-                    <div className={'col-12 md:col-6'}>
+                    <div className={'col-12 lg:col-6'}>
                         <span className="p-float-label">
                             <MultiSelect name={'privileges'} value={formik.values['privileges']} onChange={(e) => formik.setFieldValue('privileges',e.value)} options={privileges} optionLabel="name"
-                                         placeholder="Select User Privileges" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                                         placeholder="Select User Privileges" maxSelectedLabels={3} className="w-full md:w-20rem" display="chip" />
                             <label htmlFor="privileges">User privileges</label>
                         </span>
                         {getFormErrorMessage('privileges')}
                     </div>
 
                     <div className={'col-12 md:col-12'}>
-                        <FormControlLabel control={<Checkbox value={formik.values['active']} color="success" variant={'standard'}/>} label="Active"
+                        <FormControlLabel control={<Checkbox checked={formik.values['active']} value={formik.values['active']} color="success" variant={'standard'}/>} label="Active"
                         />
                     </div>
                 </div>

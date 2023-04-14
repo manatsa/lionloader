@@ -1,36 +1,30 @@
 import React,{ useState, useEffect } from "react";
 import axios from "axios";
+import GetFromAPI from "../api/getFromAPI.js";
+import {useQuery} from "@tanstack/react-query";
 
-export const useFetch = ({url, token ,setIsPending}) => {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
+export const useFetch =  (url,token, id) => {
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsPending(true);
-            try {
-                const response = await axios({
-                    method: "GET",
-                    url: url,
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + token,
-                    },
-                    timeoutErrorMessage: "Your request has timed out.",
-                });
-                setIsPending(false);
-                if (!response.ok) throw new Error(response.statusText);
-                const json = await response.json();
-                setData(json);
-                setError(null);
-                return response?.data;
+    async function fetchData(){
+        const {data} = await axios({
+            method: "GET",
+            url: url,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            timeoutErrorMessage: "Your request has timed out.",
+        })
 
-            } catch (error) {
-                setError(`${error} Could not Fetch Data `);
-                setIsPending(false);
-            }
-        };
-        fetchData();
-    }, [url]);
-    return { data, error };
+        return data
+    }
+
+    const {data, error, isError, isLoading } =  useQuery([id], fetchData,
+        {
+            refetchOnWindowFocus: false,
+            staleTime:1800000
+        })
+
+
+ return {data, error, isError, isLoading };
 };

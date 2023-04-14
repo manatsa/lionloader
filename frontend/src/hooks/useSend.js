@@ -1,7 +1,7 @@
 import React,{ useState, useEffect } from "react";
 import axios from "axios";
 
-export const useFetch = ({url,objectString, setIsPending, token}) => {
+export const useSend = ({url,objectString, setIsPending, token}) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 

@@ -398,8 +398,8 @@ export default function AppMenuBar() {
     </>
 
     return (
-        <div className="card">
-            <Menubar model={items} start={start} end={endContent} />
+        <div className=" surface-200" style={{position:'fixed', top:0,margin:'2%', width:'96%', zIndex:10000}}>
+            <Menubar model={items} start={start} end={endContent}  />
             <Menu model={userMenuItems} popup ref={userMenu} color={'green'} style={{backgroundColor: "white", color:'var(--primary-color-text)'}} />
             <Toast ref={toast} position={'center'}/>
             <ProfileDialog visible={profileVisible} setVisible={setProfileVisible} data={login} />

@@ -25,6 +25,7 @@ const EditPrivilegeDialog = ({openNewPrivilegeDialog,setEditPrivilegeDialogVisib
     const[indicator, setIndicator]=useState(false);
     const [privileges, setPrivileges] = useState([]);
 
+    showToast(toast, 'Role', JSON.stringify(privilege))
     const initialValues={
         id:privilege?.id ||'',
         name:privilege?.name||'',
