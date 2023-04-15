@@ -16,6 +16,7 @@ import PostToApi from "../../api/postToAPI";
 import showToast from "../../notifications/showToast";
 import {useFormik} from "formik";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import {useFetch} from "../../hooks/useFetch.js";
 
 const EditRoleDialog = ({openNewRoleDialog,setEditRoleDialogVisible, role}) =>{
     const toast=useRef(null);
@@ -25,10 +26,10 @@ const EditRoleDialog = ({openNewRoleDialog,setEditRoleDialogVisible, role}) =>{
     const[indicator, setIndicator]=useState(false);
     const [privileges, setPrivileges] = useState([]);
 
-   console.log(JSON.stringify(role))
     const pullData=async ()=>{
-        const res= await GetFromAPI(token, 'api/privileges/', setIndicator);
-        setPrivileges(res?.map(r=>{
+        // const res= await GetFromAPI(token, 'api/privileges/', setIndicator);
+        const {data, error, isError, isLoading }=useFetch('api/privileges/',token,['get',role?.name,'privileges']);
+        setPrivileges(data?.map(r=>{
             return {name:r?.name, code:r?.name}
         }))
         return res;

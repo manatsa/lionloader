@@ -12,18 +12,18 @@ import {BrowserRouter} from "react-router-dom";
 // @ts-ignore
 import Layout from "./layout/layout";
 import '/node_modules/primeflex/primeflex.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
-const client=new QueryClient();
+const client = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <QueryClientProvider client={client}>
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ReactQueryDevtools initialIsOpen={false}/>
             <BrowserRouter>
                 <LoginContextProvider>
                     <Layout>
-                        <App />
+                            <App/>
                     </Layout>
                 </LoginContextProvider>
             </BrowserRouter>

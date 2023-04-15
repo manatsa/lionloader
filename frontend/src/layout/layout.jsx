@@ -6,9 +6,9 @@ const Layout =({children})=>{
     return (
         <>
 
-            <div className={'surface-300'} style={{width:'100%'}}>
+            <div className={'grid col-12'} style={{margin:'10px'}} >
                 <AppMenuBar/>
-                <div align={'center'} className={'surface-300'} style={{width:'100%'}} >
+                <div align={'center'}style={{width:'100%'}} >
                     {children}
                 </div>
                 <AppFooterBar/>

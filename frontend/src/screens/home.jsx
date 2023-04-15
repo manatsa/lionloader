@@ -5,6 +5,9 @@ import {useNavigate} from 'react-router-dom';
 import {useJwt} from "react-jwt";
 import {Box, Container} from "@mui/material";
 import AppCarousel from "./app.carousel.jsx";
+import Zimnat1 from '../assets/zimnat.png';
+import Zimnat2 from '../assets/zimnat-logo.png';
+import Zimnat3 from '../assets/zimnat-vehicle.png';
 
 
 const Home = () => {
@@ -24,23 +27,17 @@ const Home = () => {
         {
             title:'Underwriting Module',
             description:'Underwriting',
-            severity:'success',
-            category: 'underwriting',
-            image: import("../assets/zimnat-logo.png")
+            image: Zimnat1
         },
         {
             title:'Finance Module',
             description:'Finance module does bulk upload of payments made to our service providers like panel beaters, assessors, etc.',
-            severity:'error',
-            category: 'finance',
-            image: import("../assets/zimnat.png")
+            image: Zimnat2
         },
         {
             title:'Administration Module',
             description:'admin',
-            severity:'info',
-            category: 'admin',
-            image: import("../assets/zimnat-vehicle.png")
+            image: Zimnat3
         }
     ]
 

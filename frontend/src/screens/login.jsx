@@ -12,6 +12,7 @@ import showToast from "../notifications/showToast";
 import {useNavigate} from 'react-router-dom';
 import useLoginContext from "../context/use.login.context";
 import {Password} from "primereact/password";
+import {useSend} from "../hooks/useSend.js";
 
 
 export default function Login() {
@@ -23,8 +24,8 @@ export default function Login() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const login={ username: data.get("username"),password: data.get("password")};
+        const datas = new FormData(event.currentTarget);
+        const login={ username: datas.get("username"),password: datas.get("password")};
         const response = await axios
             .post("api/authenticate", JSON.stringify(login), {
                 headers: {
@@ -39,6 +40,8 @@ export default function Login() {
                 console.log(ex)
                 showToast(toast,'error', 'Login Failed', ex )
             });
+
+        // const {data, error, isError, isLoading }=useSend('/api/roles/',token, JSON.stringify(login),'get-roles');
 
         if(token || response?.status===200 || response?.statusText==='OK') {
             setToken(response?.data?.token);

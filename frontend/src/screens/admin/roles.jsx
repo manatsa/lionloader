@@ -40,6 +40,8 @@ const Roles =  () => {
 
     useEffect(()=>{
         if(!token || isExpired ){
+            const t=localStorage.getItem('token');
+
             navigate("/")
         }else if(!login?.privileges?.includes('ADMIN')){
             showToast(toast,'error','Error 401: Access Denied','You do not have access to this resource!');
@@ -53,7 +55,7 @@ const Roles =  () => {
         toast.current.show({ severity: 'info', summary: 'role Selected', detail: selectedRole.name });
     };
 
-    const {data, error, isError, isLoading }=useFetch('/api/roles/',token,'get-roles');
+    const {data, error, isError, isLoading }=useFetch('/api/roles/',token,['get','roles']);
 
     const cols = [
         { field: 'id', header: 'ID' },

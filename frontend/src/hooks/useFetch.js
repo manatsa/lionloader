@@ -19,7 +19,7 @@ export const useFetch =  (url,token, id) => {
         return data
     }
 
-    const {data, error, isError, isLoading } =  useQuery([id], fetchData,
+    const {data, error, isError, isLoading } =  useQuery(id, fetchData,
         {
             refetchOnWindowFocus: false,
             staleTime:1800000

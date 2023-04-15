@@ -393,12 +393,12 @@ export default function AppMenuBar() {
         <a href={'#'} onClick={()=>navigate("/home")} ><img alt="logo" src={Logo} height="40" className="mr-2" /></a>
     </>;
     const endContent = <>
-        <Button label={(login?.lastName || '')+' '+(login?.firstName||'')} outlined={true} severity={"success"} rounded text raised style={{fontSize:'1rem',opacity:0.9, color:"forestgreen" }} icon="pi pi-user" onClick={(e) => userMenu.current.toggle(e)} />
-        <i className="pi  p-menu-separator mr-2" style={{width:'3vw'}} />
+            <Button label={(login?.lastName || '')+' '+(login?.firstName||'')} outlined={true} severity={"success"} rounded text raised style={{fontSize:'1rem',opacity:0.9, color:"forestgreen" }} icon="pi pi-user" onClick={(e) => userMenu.current.toggle(e)} />
+            <i className="pi  p-menu-separator mr-2" style={{width:'3vw'}} />
     </>
 
     return (
-        <div className=" surface-200" style={{position:'fixed', top:0,margin:'2%', width:'96%', zIndex:10000}}>
+        <div  style={{width:'100%'}}>
             <Menubar model={items} start={start} end={endContent}  />
             <Menu model={userMenuItems} popup ref={userMenu} color={'green'} style={{backgroundColor: "white", color:'var(--primary-color-text)'}} />
             <Toast ref={toast} position={'center'}/>
