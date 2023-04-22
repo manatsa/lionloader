@@ -16,7 +16,7 @@ import PostToApi from "../../api/postToAPI";
 import showToast from "../../notifications/showToast";
 import {useFormik} from "formik";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {useFetch} from "../../hooks/useFetch.js";
+import {useFetch} from "../../query/useFetch.js";
 
 const EditRoleDialog = ({openNewRoleDialog,setEditRoleDialogVisible, role}) =>{
     const toast=useRef(null);

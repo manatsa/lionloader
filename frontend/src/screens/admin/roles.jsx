@@ -17,7 +17,7 @@ import {InputText} from "primereact/inputtext";
 import {Dialog} from "primereact/dialog";
 import {Typography} from "@mui/material";
 import EditRoleDialog from "./edit.role.dialog.jsx";
-import {useFetch} from "../../hooks/useFetch.js";
+import {useFetch} from "../../query/useFetch.js";
 
 const Roles =  () => {
 
@@ -55,7 +55,7 @@ const Roles =  () => {
         toast.current.show({ severity: 'info', summary: 'role Selected', detail: selectedRole.name });
     };
 
-    const {data, error, isError, isLoading }=useFetch('/api/roles/',token,['get','roles']);
+    const {data, error, isError, isLoading }=useFetch('/api/users/',token,['get','users']);
 
     const cols = [
         { field: 'id', header: 'ID' },

@@ -17,6 +17,7 @@ import {InputText} from "primereact/inputtext";
 import EditUserDialog from "./edit.user.dialog.jsx";
 import {Dialog} from "primereact/dialog";
 import {Typography} from "@mui/material";
+import {useFetch} from "../../query/useFetch.js";
 
 const Users =  () => {
 
@@ -24,7 +25,7 @@ const Users =  () => {
     const {isExpired} =useJwt(token);
     const navigate=useNavigate();
     const toast= useRef(null);
-    const[indicator, setIndicator]=useState(false);
+    // const[indicator, setIndicator]=useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [openNewUserDialog, setOpenNewUserDialog] = useState(null);
@@ -56,14 +57,7 @@ const Users =  () => {
         toast.current.show({ severity: 'info', summary: 'user Selected', detail: user.userName });
     };
 
-    const pullData=async ()=>{
-        const r= await GetFromAPI(token, 'api/users/', setIndicator);
-        setUsers(r)
-        return r;
-    }
-    useEffect( ()=>{
-        const data=pullData();
-    },[])
+    const {data, error, isError, isLoading }=useFetch('/api/users/',token,['get','users']);
 
     const cols = [
         { field: 'id', header: 'ID' },
@@ -159,12 +153,12 @@ const Users =  () => {
     return (
         <>
             <Toast ref={toast} position={'center'} />
-            {indicator && <div className="card flex justify-content-center"> <ProgressSpinner style={{zIndex:1000}}/></div>}
+            {/*{indicator && <div className="card flex justify-content-center"> <ProgressSpinner style={{zIndex:1000}}/></div>}*/}
             <div className="card">
                 <Tooltip target=".export-buttons>button" position="bottom" />
                 <ContextMenu model={menuModel} ref={cm} onHide={() => setSelectedUser(null)} />
                 <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}/>
-                <DataTable ref={dt} value={users}  tableStyle={{ minWidth: '50rem' }} paginator={true} rows={10} header={renderHeader}
+                <DataTable ref={dt} value={data}  tableStyle={{ minWidth: '50rem' }} paginator={true} rows={10} header={renderHeader}
                            filters={filters} filterDisplay="menu" globalFilterFields={['firstName', 'lastName', 'userName', 'active', 'dateCreated','userLevel']}
                            onContextMenu={(e) => cm.current.show(e.originalEvent)} stripedRows={true}
                            rowsPerPageOptions={[10, 25, 50]} dataKey="id" resizableColumns showGridlines

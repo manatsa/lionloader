@@ -12,7 +12,7 @@ import showToast from "../notifications/showToast";
 import {useNavigate} from 'react-router-dom';
 import useLoginContext from "../context/use.login.context";
 import {Password} from "primereact/password";
-import {useSend} from "../hooks/useSend.js";
+import {useSend} from "../query/useSend.js";
 
 
 export default function Login() {
@@ -37,13 +37,14 @@ export default function Login() {
             })
             .catch(async function (error) {
                 const ex = await JSON.stringify(error.toJSON())?.split(',')[0]?.split(':')[1];
-                console.log(ex)
                 showToast(toast,'error', 'Login Failed', ex )
             });
 
         // const {data, error, isError, isLoading }=useSend('/api/roles/',token, JSON.stringify(login),'get-roles');
 
-        if(token || response?.status===200 || response?.statusText==='OK') {
+        showToast(toast,'error','ERROR',JSON.stringify(response));
+
+        if( response?.data?.token || response?.status===200 || response?.statusText==='OK') {
             setToken(response?.data?.token);
             setLogin(response?.data);
             showToast(toast, 'success', 'Login Message', "You have successfully logged in!", 'center')

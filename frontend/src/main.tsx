@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {Suspense, useRef} from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+// import App from './App'
 import './index.css'
 import './index.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -12,21 +12,27 @@ import {BrowserRouter} from "react-router-dom";
 // @ts-ignore
 import Layout from "./layout/layout";
 import '/node_modules/primeflex/primeflex.css';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import QueryProvider from "./query/QueryProvider";
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {ComponentPreviews, useInitial} from "./dev";
+import Loader from "./query/Loader/Loader";
+import {QueryCache, QueryClient} from "@tanstack/react-query";
+import AppStage from "./AppStage";
 
-const client = new QueryClient();
+
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <QueryClientProvider client={client}>
-            <ReactQueryDevtools initialIsOpen={false}/>
-            <BrowserRouter>
+        <BrowserRouter>
                 <LoginContextProvider>
                     <Layout>
-                            <App/>
+                        <DevSupport ComponentPreviews={ComponentPreviews}
+                                    useInitialHook={useInitial}
+                        >
+                            <AppStage />
+                        </DevSupport>
                     </Layout>
                 </LoginContextProvider>
-            </BrowserRouter>
-        </QueryClientProvider>
+        </BrowserRouter>
     </React.StrictMode>
 )

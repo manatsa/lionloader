@@ -22,5 +22,5 @@ export const LoginContextProvider = ({ children }) => {
         setLogin
     }
 
-    return <LoginContext.Provider value={value}>{children}</LoginContext.Provider>
+    return <LoginContext.Provider value={value} >{children}</LoginContext.Provider>
 }

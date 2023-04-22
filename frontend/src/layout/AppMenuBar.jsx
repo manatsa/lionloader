@@ -193,7 +193,6 @@ import showToast from "../notifications/showToast";
 import {Toast} from "primereact/toast";
 import ProfileDialog from "../screens/admin/profile.dialog.jsx";
 import ChangePasswordDialog from "../screens/admin/change.password.dialog.jsx";
-import "./menu.bar.css";
 import Logo from '../assets/logo.png';
 
 export default function AppMenuBar() {
@@ -246,6 +245,7 @@ export default function AppMenuBar() {
             command:()=>{
                 setToken(null);
                 setLogin(null)
+                localStorage.setItem('token', null);
                 navigate("/")
             }
         }
@@ -255,6 +255,14 @@ export default function AppMenuBar() {
         {
             label: 'Home',
             icon: 'pi pi-fw pi-home',
+            command:()=> {
+                if(token && !isExpired){
+                    navigate("/home")
+                }else{
+                    showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
+                    navigate("/")
+                }
+            }
         },
         {
 
@@ -390,7 +398,7 @@ export default function AppMenuBar() {
     ];
 
     const start = <><i className="pi  p-menu-separator mr-2" style={{width:'3vw'}} />
-        <a href={'#'} onClick={()=>navigate("/home")} ><img alt="logo" src={Logo} height="40" className="mr-2" /></a>
+        <a href={''} onClick={()=>navigate("/home")} ><img alt="logo" src={Logo} height="40" className="mr-2" /></a>
     </>;
     const endContent = <>
             <Button label={(login?.lastName || '')+' '+(login?.firstName||'')} outlined={true} severity={"success"} rounded text raised style={{fontSize:'1rem',opacity:0.9, color:"forestgreen" }} icon="pi pi-user" onClick={(e) => userMenu.current.toggle(e)} />
@@ -399,7 +407,8 @@ export default function AppMenuBar() {
 
     return (
         <div  style={{width:'100%'}}>
-            <Menubar model={items} start={start} end={endContent}  />
+            <div style={{position:'fixed', top:'10px'}}></div>
+            <Menubar model={items} start={start} end={endContent} style={{border:'0.1px solid forestgreen', color: 'forestgreen', margin:'2%'}} />
             <Menu model={userMenuItems} popup ref={userMenu} color={'green'} style={{backgroundColor: "white", color:'var(--primary-color-text)'}} />
             <Toast ref={toast} position={'center'}/>
             <ProfileDialog visible={profileVisible} setVisible={setProfileVisible} data={login} />
