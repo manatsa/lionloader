@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zimnat.lionloader.business.domain.User;
+import org.zimnat.lionloader.business.domain.dto.UserDTO;
 import org.zimnat.lionloader.business.repos.UserRepo;
 import org.zimnat.lionloader.business.services.RoleService;
 import org.zimnat.lionloader.business.services.UserService;
@@ -103,8 +104,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User update(User user, User editor) {
+    public User update(String id, UserDTO userDTO, User editor) throws Exception {
         User target=null;
+        User user=get(id);
         if(user!=null && user.getId()!=null){
             target=entityManager.find(User.class, user.getId());
             BeanUtils.copyProperties(user, target);
@@ -112,11 +114,20 @@ public class UserServiceImpl implements UserService {
             User creator=findByUserName(user.getCreatedBy());
             target.setCreatedBy(editor.getUserName());
             target.setDateModified(new Date());
+            target.setUserName(userDTO.getUserName());
+            target.setActive(userDTO.isActive());
+            target.setLastName(userDTO.getLastName());
+            target.setFirstName(target.getFirstName());
+            target.setUserLevel(userDTO.getUserLevel());
+            target.setRoles(userDTO.getRoles().stream().map(r->userRoleService.getByName(r)).collect(Collectors.toSet()));
             User u =entityManager.merge(target);
+            System.err.println();
             return u;
+        }else{
+            throw new Exception("User was not found!");
         }
 
-        return null;
+
     }
 
 

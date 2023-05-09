@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zimnat.lionloader.business.domain.dto.PrivilegeDTO;
 import org.zimnat.lionloader.business.repos.PrivilegeRepo;
 import org.zimnat.lionloader.business.domain.Privilege;
 import org.zimnat.lionloader.business.domain.Role;
@@ -44,8 +45,8 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public Privilege save(Privilege t) {
-        t.setCreatedBy(userService.get(userService.getCurrentUser().getId()));
+    public Privilege save(Privilege t, User user) {
+        t.setCreatedBy(user);
         t.setId(UUID.randomUUID().toString());
         t.setDateCreated(new Date());
         return privilegeRepo.save(t);
@@ -53,20 +54,16 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     @Transactional
-    public Privilege update(Privilege privilege) {
+    public Privilege update(String id, PrivilegeDTO privilegeDTO, User user) {
         Privilege target = null;
-        User user = userService.get(privilege.getCreatedBy().getId());
+        Privilege privilege=get(id);
         if (privilege != null && privilege.getId() != null) {
             target = entityManager.find(Privilege.class, privilege.getId());
             target.setModifiedBy(entityManager.find(User.class, userService.getCurrentUser().getId()));
             BeanUtils.copyProperties(privilege, target);
             target.setCreatedBy(user);
             target.setDateModified(new Date());
-            /*if(!(target.getStatus().equals(Status.ACTIVE))){
-                target.setActive(Boolean.FALSE);
-            }else{
-                target.setActive(Boolean.TRUE);
-            }*/
+            target.setName(privilegeDTO.getName());
             return entityManager.merge(target);
         }
 
@@ -74,7 +71,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public List<Privilege> getAllPrivileges() {
+    public List<Privilege> getAll() {
         return privilegeRepo.findAll();
     }
 

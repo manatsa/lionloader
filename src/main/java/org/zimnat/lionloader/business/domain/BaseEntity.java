@@ -29,7 +29,7 @@ abstract public class BaseEntity implements Serializable {
     @JsonIgnore
     @CreatedBy
     @JoinColumn(name="created_by")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private User createdBy;
 
     @JsonIgnore

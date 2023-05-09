@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zimnat.lionloader.business.domain.Role;
 import org.zimnat.lionloader.business.domain.User;
+import org.zimnat.lionloader.business.domain.dto.RoleDTO;
+import org.zimnat.lionloader.business.domain.dto.UserDTO;
 import org.zimnat.lionloader.business.repos.RoleRepo;
 import org.zimnat.lionloader.business.services.PrivilegeService;
 import org.zimnat.lionloader.business.services.RoleService;
@@ -103,14 +105,17 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public Role update(Role role) {
+    public Role update(String id, RoleDTO roleDTO, User editor) throws Exception {
         Role target=null;
+        Role role=get(id);
         if(role!=null && role.getId()!=null){
             target=entityManager.find(Role.class, role.getId());
             BeanUtils.copyProperties(role, target);
             target.setCreatedBy(userService.get(role.getCreatedBy().getId()));
             target.setModifiedBy(entityManager.find(User.class,userService.getCurrentUser().getId()));
             target.setDateModified(new Date());
+            target.setName(roleDTO.getName());
+            target.setPrivileges(roleDTO.getPrivileges().stream().map(r->privilegeService.getByName(r)).collect(Collectors.toSet()));
             return entityManager.merge(target);
         }
         return null;

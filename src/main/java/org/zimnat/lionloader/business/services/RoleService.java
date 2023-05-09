@@ -2,6 +2,9 @@ package org.zimnat.lionloader.business.services;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.zimnat.lionloader.business.domain.Role;
+import org.zimnat.lionloader.business.domain.User;
+import org.zimnat.lionloader.business.domain.dto.RoleDTO;
+import org.zimnat.lionloader.business.domain.dto.UserDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -28,5 +31,5 @@ public interface RoleService {
 
     public Set<Role> findByNamesIn(Set<String> names);
 
-    public Role update(Role t);
+    public Role update(String id, RoleDTO userDTO, User editor) throws Exception;
 }

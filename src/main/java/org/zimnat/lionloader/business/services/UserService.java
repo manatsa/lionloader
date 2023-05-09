@@ -1,6 +1,7 @@
 package org.zimnat.lionloader.business.services;
 
 import org.zimnat.lionloader.business.domain.User;
+import org.zimnat.lionloader.business.domain.dto.UserDTO;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public interface UserService {
 
     public User changePassword(User t, User editor);
 
-    public User update(User user, User editor);
+    public User update(String id, UserDTO userDTO, User editor) throws Exception;
 
     public List<User> searchUsers(String [] names);
 

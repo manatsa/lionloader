@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.zimnat.lionloader.business.domain.BaseName;
 import org.zimnat.lionloader.business.domain.Privilege;
 import org.zimnat.lionloader.business.domain.Role;
+import org.zimnat.lionloader.business.domain.User;
 import org.zimnat.lionloader.business.domain.dto.RoleDTO;
 import org.zimnat.lionloader.business.services.PrivilegeService;
 import org.zimnat.lionloader.business.services.RoleService;
+import org.zimnat.lionloader.business.services.UserService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,9 @@ public class RoleController {
    @Autowired
     PrivilegeService privilegeService;
 
+   @Autowired
+    UserService userService;
+
     @GetMapping("/")
     public ResponseEntity<?> getRoles(){
         try{
@@ -52,9 +57,22 @@ public class RoleController {
         role.setName(roleDTO.getName());
         Set<Privilege> privilegeSet= roleDTO.getPrivileges().stream().map(p->privilegeService.getByName(p)).collect(Collectors.toSet());
         role.setPrivileges(privilegeSet);
-        System.err.println("ROLE::"+role);
         try{
             role=roleService.save(role);
+            return  ResponseEntity.ok(roleService.getAll());
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> createRole(@RequestBody RoleDTO roleDTO, @PathVariable("id") String id){
+
+        try{
+            User currentUser=userService.getCurrentUser();
+            Role role=roleService.update(id, roleDTO,currentUser);
             return  ResponseEntity.ok(roleService.getAll());
         }catch(Exception e){
             e.printStackTrace();

@@ -8,7 +8,7 @@ import org.zimnat.lionloader.utils.StringUtils;
  */
 
 public enum UserLevel {
-    ADMIN(1), USER(2), MANAGER(3), OTHER(4);
+    ADMIN(1), USER(2), MANAGER(3),EXECUTIVE(4), OTHER(5);
 
     private final Integer code;
 
@@ -29,6 +29,8 @@ public enum UserLevel {
             case 3:
                 return MANAGER;
             case 4:
+                return EXECUTIVE;
+            case 5:
                 return OTHER;
             default:
                 throw new IllegalArgumentException("Illegal parameter passed to method :" + code);
