@@ -1,9 +1,6 @@
 package org.zimnat.lionloader.business.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zimnat.lionloader.business.domain.BaseName;
 import org.zimnat.lionloader.business.domain.Privilege;
@@ -25,6 +22,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class UserDTO {
     private String id;
     private String userName;

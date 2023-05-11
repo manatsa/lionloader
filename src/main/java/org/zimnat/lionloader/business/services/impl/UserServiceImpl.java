@@ -19,6 +19,7 @@ import org.zimnat.lionloader.business.domain.dto.UserDTO;
 import org.zimnat.lionloader.business.repos.UserRepo;
 import org.zimnat.lionloader.business.services.RoleService;
 import org.zimnat.lionloader.business.services.UserService;
+import org.zimnat.lionloader.utils.Constants;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -93,9 +94,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User changePassword(User u, User editor) {
-        User t=get(u.getId());
-        String hashedPassword = passwordEncoder.encode(t.getPassword());
+    public User changePassword(User editor, String newPassword) {
+        User t=get(editor.getId());
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        t.setPassword(hashedPassword);
+        t.setModifiedBy(editor.getUserName());
+        t.setDateModified(new Date());
+        return userRepo.save(t);
+    }
+
+    @Override
+    @Transactional
+    public User resetPassword(String id, User editor) {
+        User t=get(id);
+        String hashedPassword = passwordEncoder.encode(Constants.DEFAULT_PASSWORD);
         t.setPassword(hashedPassword);
         t.setModifiedBy(editor.getUserName());
         t.setDateModified(new Date());
@@ -126,10 +138,44 @@ public class UserServiceImpl implements UserService {
         }else{
             throw new Exception("User was not found!");
         }
+    }
+
+    @Transactional
+    @Override
+    public User activateDeactivate(String id, User editor) throws Exception {
+        User target=null;
+
+        if(id!=null){
+            target=entityManager.find(User.class,id);
+            target.setModifiedBy(editor.getModifiedBy());
+            target.setDateModified(new Date());
+            target.setActive(!target.getActive());
+            User user =entityManager.merge(target);
+            return user;
+        }else{
+            throw new Exception("User was not found!");
+        }
 
 
     }
 
+    @Transactional
+    @Override
+    public User lockAccount(String username) throws Exception {
+        User target=findByUserName(username);
+
+        if(username!=null && target!=null){
+            target=findByUserName(username);
+            target.setDateModified(new Date());
+            target.setActive(false);
+            User user =entityManager.merge(target);
+            return user;
+        }else{
+            throw new Exception("User was not found or is locked!");
+        }
+
+
+    }
 
     @Override
     public User findByUserName(String name) {

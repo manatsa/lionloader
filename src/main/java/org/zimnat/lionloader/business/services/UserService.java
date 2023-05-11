@@ -27,9 +27,15 @@ public interface UserService {
 
     public User getCurrentUser();
 
-    public User changePassword(User t, User editor);
+    public User changePassword(User editor, String newPassword);
+
+    public User resetPassword(String id, User editor);
 
     public User update(String id, UserDTO userDTO, User editor) throws Exception;
+
+    public User activateDeactivate(String id, User editor) throws Exception;
+
+    public User lockAccount(String id) throws Exception;
 
     public List<User> searchUsers(String [] names);
 

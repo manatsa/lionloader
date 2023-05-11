@@ -75,12 +75,38 @@ public class UserController {
         }
     }
 
-    @PutMapping("/changePassword/{id}")
-    public ResponseEntity<?> changeUserPassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable("id") String id){
+    @PutMapping("/changePassword/{newPassword}")
+    public ResponseEntity<?> changeUserPassword(@PathVariable("newPassword") String password){
+        System.err.println("NEW PASS::"+password);
         User currentUser=userService.getCurrentUser();
-        User user=userService.get(id);
-        userService.changePassword(user, currentUser);
-        return  ResponseEntity.ok("Password changed successfully!");
+        User user=userService.changePassword(currentUser, password);
+        return  ResponseEntity.ok(user);
     }
+
+    @PutMapping("/resetPassword/{id}")
+    public ResponseEntity<?> reset(@PathVariable("id") String id){
+        User currentUser=userService.getCurrentUser();
+        User user=userService.resetPassword(id, currentUser);
+        return  ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/activateDeactivate/{id}")
+    public ResponseEntity<?> activateDeactivate(@PathVariable("id") String id)throws Exception{
+        User currentUser=userService.getCurrentUser();
+        User user=userService.activateDeactivate(id, currentUser);
+        return  ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/lock-account/{id}")
+    public ResponseEntity<?> lockAccount(@PathVariable("id") String id){
+        User user= null;
+        try {
+            user = userService.lockAccount(id);
+        } catch (Exception e) {
+        }
+        return  ResponseEntity.ok(user);
+    }
+
+
 
 }

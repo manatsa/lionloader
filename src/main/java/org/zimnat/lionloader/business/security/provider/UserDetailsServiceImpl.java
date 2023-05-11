@@ -16,6 +16,7 @@
 
 package org.zimnat.lionloader.business.security.provider;
 
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
     @Autowired
     private UserService userService;
 
+    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String userName)
             throws UsernameNotFoundException {
@@ -54,6 +56,9 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
         org.zimnat.lionloader.business.domain.User user = (org.zimnat.lionloader.business.domain.User) userService.findByUserName(userName);
         //logger.info("**********************************************Hello");
 
+        if(!user.getActive()){
+            throw new AccountLockedException("User account is locked. Please get assistance from the administrator.");
+        }
         if (user != null) {
             String password = user.getPassword();
             //System.out.println("++++++++++++++++++++++++++++++++++++++++++++ "+user.toString());
