@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -6,32 +6,26 @@ import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import axios from "axios";
 import { Toast } from 'primereact/toast';
 import showToast from "../notifications/showToast";
-import {createSearchParams, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Password} from "primereact/password";
 import {getLogin} from "../auth/check.login";
+import {sendData} from "../query/sendData.js";
 import {useMutation} from "@tanstack/react-query";
 import Loader from "../query/Loader/Loader.jsx";
 import doUpdate from "../query/doUpdate.js";
 
 
-export default function Login({showLoginDialog}) {
-    const { token, login } = getLogin();
+export default function Login() {
+    const { token } = getLogin();
     const toast = useRef(null);
     const [logged, setLogged] = useState(false);
     const [attempts, setAttempts] = useState(0);
     const [username, setUsername] = useState(null);
     const [loginError, setLoginError] = useState(null);
     const navigate= useNavigate();
-
-    const logins=login && login!=='undefined' ? JSON.parse(login) : null;
-
-    useEffect(()=>{
-        if(token && logins){
-            navigate("/home")
-        }
-    },[])
 
     const lockMutation =  useMutation({
         mutationFn: (data) => doUpdate('api/users/lock-account/', token, data?.username, data?.data),
@@ -52,33 +46,25 @@ export default function Login({showLoginDialog}) {
                 }
             }
 
-            console.log('ERROR:: ',mutation.failureReason)
+            console.log(error)
 
         },
         onSuccess: async (data, variables, context) => {
             const token=data?.token;
             await localStorage.setItem('token',token);
             await localStorage.setItem('login',JSON.stringify(data));
-            navigate({
-                path:"/",
-                search: createSearchParams({
-                    user: data?.userName
-                }).toString()
-            })
+            navigate("/home")
         },
         onSettled: (data, error, variables, context) => {
             if(mutation.isError){
                 showToast(toast,'error','Login Error',mutation?.error?.message);
             }
-
-            showLoginDialog(false);
         },
     })
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const datas = new FormData(event.currentTarget);
-
         const login={ username: datas.get("username"),password: datas.get("password")};
         setUsername(datas.get("username"));
         mutation.mutate({ id: 'login'+login['username'], data:login})

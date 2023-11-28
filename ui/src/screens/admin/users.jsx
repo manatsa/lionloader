@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import showToast from "../../notifications/showToast";
 import {Toast} from "primereact/toast";
 import {ProgressSpinner} from "primereact/progressspinner";
+import GetFromAPI from "../../api/getFromAPI";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import { Button } from 'primereact/button';
@@ -15,7 +16,7 @@ import {InputText} from "primereact/inputtext";
 import EditUserDialog from "./edit.user.dialog.jsx";
 import {Dialog} from "primereact/dialog";
 import {Typography} from "@mui/material";
-import {doFetch} from "../../query/doFetch.js";
+import {useFetch} from "../../query/useFetch.js";
 import {getLogin} from "../../auth/check.login";
 import ViewUserDialog from "./view.user.dialog.jsx";
 import {useMutation} from "@tanstack/react-query";
@@ -77,7 +78,7 @@ const Users =  () => {
         }
     });
 
-    const logins=login && login!=='undefined' ? JSON.parse(login) : null;
+    const logins=login ? JSON.parse(login) : null;
 
     useEffect(()=>{
         if(!token || isExpired ){
@@ -90,10 +91,10 @@ const Users =  () => {
         }
     },[])
 
-    const userData=doFetch('/api/users/',token,['get','users']);
+    const userData=useFetch('/api/users/',token,['get','users']);
     useEffect(()=>{
         setUsers(userData?.data);
-    },[])
+    },[userData?.data])
 
     const cols = [
         { field: 'firstName', header: 'FIRST NAME' },

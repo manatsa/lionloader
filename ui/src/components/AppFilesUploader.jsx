@@ -11,6 +11,8 @@ import {ProgressSpinner} from "primereact/progressspinner";
 import {OutTable, ExcelRenderer} from 'react-excel-renderer';
 import './excel.css';
 import {SpeedDial} from "primereact/speeddial";
+import {InputText} from "primereact/inputtext";
+import {Dropdown} from "primereact/dropdown";
 
 const  AppFilesUploader = ({token}) =>{
     const [totalSize, setTotalSize] = useState(0);
@@ -21,6 +23,13 @@ const  AppFilesUploader = ({token}) =>{
     const fileUploadRef = useRef(null);
     const fileMaxSize=5000000;
     const toast=useRef(null);
+    const [file, setFile]= useState(null)
+    const [rowsNum, setRowsNum] = useState(0);
+    const [agent, setAgent]= useState(null)
+    const agents=[
+        {label:'ALERTSURE', code:'T3'},
+        {label: 'BANCABC', code: 'T7'}
+    ]
 
     const {mutate, error,data, isLoading, isError, isSuccess} = useMutation({
         mutationFn: (data)=>  fetch(`/api/upload/`, {
@@ -29,7 +38,10 @@ const  AppFilesUploader = ({token}) =>{
                 'Authorization': "Bearer " + token,
             },
             body: data?.file,
-        }).then(res=>res.json())
+        }).then(res=>{
+            console.log(res)
+            return res
+        })
         ,
         onError: error=>{
             setIndicator(false)
@@ -38,8 +50,8 @@ const  AppFilesUploader = ({token}) =>{
         },
         onMutate: ()=>setIndicator(true),
         onSuccess:(data)=>{
-            alert(data?.length)
-            showToast(toast,'success', 'Operation Success!','Operation was successful.');
+            console.log(data)
+            showToast(toast,data?.code<300?'success':'error', 'Operation Feedback!',data?.message);
             setIndicator(false)
 
         }
@@ -87,7 +99,17 @@ const  AppFilesUploader = ({token}) =>{
                 {uploadButton}
                 {cancelButton}
                 <div className="flex align-items-center gap-3 ml-auto">
-                    <span>{formatedValue} / 5 MB</span>
+                    {!file &&
+                        <span className="p-float-label">
+                            <Dropdown autoFocus  id={'agents'} value={agent} onChange={(e) => setAgent(e.value)} options={agents} optionLabel="label"
+                                      filter showClear placeholder="Select an agent" className="w-full md:w-14rem" />
+                            <label htmlFor="agents">Select Agent</label>
+                        </span>
+                        }
+
+                        {file && <span style={{fontWeight: "bolder"}}>Last Edited::{file?.lastModifiedDate?.toLocaleString()}</span>}
+                    {rows?.length>0 && <span> Size::{(rows?.length -1)} items </span>}
+                    <span style={{fontWeight:"bolder"}}>{formatedValue} / 5 MB</span>
                     <ProgressBar value={value} showValue={false} style={{width: '10rem', height: '12px'}}/>
                 </div>
             </div>
@@ -130,21 +152,25 @@ const  AppFilesUploader = ({token}) =>{
     const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
     const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
+
+
     const onFileChangeHandler = (e) => {
         const file = e.files[0];
-        /*const formData = new FormData();
-        formData.append('file', file);
-        mutate({id:null, file:formData})*/
+        setFile(file);
         fileUploadRef?.current?.clear();
+        setIndicator(true);
         ExcelRenderer(file, (err, resp) => {
             if(err){
-                console.log(err);
+                // console.log(err);
+                setIndicator(false)
                 showToast(toast, 'error','File Reading Error', err.toString())
             }
             else{
 
+                // console.log('Rows::','\n',resp.rows)
                     setColumns(resp.cols);
                     setRows(resp.rows);
+                    setIndicator(false)
                 showToast(toast, 'info','File Reading Status', 'Spreadsheet read successfully!')
 
             }
@@ -152,6 +178,44 @@ const  AppFilesUploader = ({token}) =>{
 
 
     };
+
+    const doUpload=()=>{
+        setIndicator(true)
+        let filename=file?.name;
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append("agent", agent?.code)
+        console.log(agent?.code)
+        setColumns([]);
+        setRows([]);
+        setFile(null)
+        setShowHeader(true)
+        // mutate({id:null, file:formData})
+        fetch(`/api/upload/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + token,
+            },
+            body: formData,
+        }).then(response=>response?.blob())
+            .then(blob=>{
+            try {
+                const blobUrl = window.URL.createObjectURL(blob)
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = "Formated_"+filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                setIndicator(false)
+            }catch(e){
+                console.log( e);
+                setIndicator(false)
+            }
+        })
+
+    }
 
     const speedItems = [
         {
@@ -161,6 +225,7 @@ const  AppFilesUploader = ({token}) =>{
             command: () => {
                 setColumns([]);
                 setRows([]);
+                setFile(null)
                 setShowHeader(true)
             }
         },
@@ -175,7 +240,8 @@ const  AppFilesUploader = ({token}) =>{
             label: 'Upload',
             icon: 'pi pi-upload',
             command: () => {
-                showToast(toast, 'info', 'Uploading Now', 'Data id being uploaded' );
+                doUpload();
+
             }
         },
 
@@ -203,7 +269,7 @@ const  AppFilesUploader = ({token}) =>{
 
                    }
 
-                {rows?.length>1 && columns?.length>1 && <div style={{ width: '100%', height: '400px', overflowY:'scroll', overflowX:'scroll' }} sx={{height:'200px'}} >
+                {rows?.length>1 && columns?.length>1 && <div style={{ width: '100%', height: '80vh', overflowY:'scroll', overflowX:'scroll' }} sx={{height:'200px'}} >
                     <SpeedDial model={speedItems} type="quarter-circle" direction="up-left" transitionDelay={80} showIcon="pi pi-bars" hideIcon="pi pi-times" buttonClassName="p-button-outlined" style={{right:`10px`, bottom:`10px`}} />
                     <OutTable data={rows} columns={columns} tableClassName="ExcelTable2007" tableHeaderRowClass="heading" />
                 </div>}

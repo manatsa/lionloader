@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,7 +19,6 @@ import UserMenu from "./userMenu";
 import {PanelMenu} from "primereact/panelmenu";
 import './app.menu.css'
 import {getLogin} from "../auth/check.login";
-import {PrimaryColor} from "../components/Constants.jsx";
 
 
 
@@ -27,27 +26,21 @@ import {PrimaryColor} from "../components/Constants.jsx";
 
 
 export default function AppMenu() {
-
+    const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const navigate=useNavigate();
     const {token, login} = getLogin();
     const {isExpired} = useJwt(token);
     const toast = useRef(null);
     const userMenu = useRef(null);
-    const [appName, setAppName]= useState('');
-    const [logged, setLogged] = useState(false);
-
-    // alert(login!=='undefined')
-    useEffect(()=>{
-        setAppName("A . B . M")
-        setLogged(true)
-    },[appName,login])
+    const underwritingMenu = useRef(null);
+    const financeMenu = useRef(null);
+    const generalMenu = useRef(null);
 
     const [profileVisible, setProfileVisible]= useState(false);
     const [changePasswordVisible, setChangePasswordVisible]= useState(false);
 
-    const userMenuItems =
-        [
+    const userMenuItems = [
         {
             label: 'User Operations',
             items: [
@@ -89,8 +82,7 @@ export default function AppMenu() {
             }
         }
     ];
-    const items =
-        [
+    const items = [
         {
             label: 'Home',
             icon: 'pi pi-fw pi-home',
@@ -108,13 +100,13 @@ export default function AppMenu() {
         {
             label: 'System Admin',
             icon: 'pi pi-fw pi-slack',
-            expanded: login && login!=='undefined' &&  JSON.parse(login || {})?.roles?.includes('ADMIN'),
+            expanded:JSON.parse(login)?.roles?.includes('ADMIN'),
             items: [
                 {
                     label: 'Users',
                     icon: 'pi pi-fw pi-users',
                     command: ()=>{
-                        if(token && login && login!=='undefined' && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                        if(token && !isExpired){
                             navigate("/users");
                             setOpen(false);
                         }else{
@@ -126,7 +118,7 @@ export default function AppMenu() {
                     label: 'Roles',
                     icon: 'pi pi-fw pi-lock-open',
                     command: ()=>{
-                        if(token && login && login!=='undefined' && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                        if(token && !isExpired){
                             navigate("/roles");
                             setOpen(false);
                         }else{
@@ -138,7 +130,7 @@ export default function AppMenu() {
                     label: 'Privileges',
                     icon: 'pi pi-fw pi-wrench',
                     command: ()=>{
-                        if(token && login && login!=='undefined' && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                        if(token && !isExpired){
                             navigate("/privileges");
                             setOpen(false);
                         }else{
@@ -150,7 +142,7 @@ export default function AppMenu() {
                     label: 'Settings',
                     icon: 'pi pi-fw pi-cog',
                     command: ()=>{
-                        if(token && login && login!=='undefined' && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                        if(token && !isExpired){
                             navigate("/settings");
                             setOpen(false);
                         }else{
@@ -169,16 +161,16 @@ export default function AppMenu() {
         },
         {
 
-            label: 'Industry Admin',
+            label: 'Operations Admin',
             icon: 'pi pi-fw pi-folder-open',
-            expanded: login && login!=='undefined' &&  JSON.parse(login||{})?.roles?.includes('UNDERWRITING'),
+            expanded: JSON.parse(login)?.roles?.includes('PRODUCT') || JSON.parse(login)?.roles?.includes('ADMIN'),
             items: [
                 {
-                    label: 'Industry Admin',
-                    icon: 'pi pi-fw pi-plus',
+                    label: 'Icecash Bulk Upload',
+                    icon: 'pi pi-fw pi-sitemap',
                     command: ()=>{
-                        if(token && !isExpired){
-                            navigate("/industry")
+                        if(token && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                            navigate("/icecash")
                             setOpen(false)
                         }else{
                             showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
@@ -187,11 +179,23 @@ export default function AppMenu() {
                     }
                 },
                 {
-                    label: 'Category',
-                    icon: 'pi pi-fw pi-undo',
+                    label: 'Bank Bulk Upload',
+                    icon: 'pi pi-fw pi-server',
+                    command: ()=>{
+                        if(token && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                            navigate("/category")
+                            setOpen(false)
+                        }else{
+                            showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
+                        }
+                    }
+                },
+                {
+                    label: 'Broker Bulk Upload',
+                    icon: 'pi pi-fw pi-flag',
                     command: ()=>{
                         if(token && !isExpired){
-                            navigate("/category")
+                            navigate("/product")
                             setOpen(false)
                         }else{
                             showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
@@ -207,45 +211,7 @@ export default function AppMenu() {
                 }
             ]
         },
-        {
-            label: 'Product Admin',
-            icon: 'pi pi-fw pi-dollar',
-            expanded: login && login!=='undefined' && JSON.parse(login || {})?.roles?.includes('FINANCE'),
-            items: [
-                {
-                    label: 'Product Admin',
-                    icon: 'pi pi-fw pi-paperclip',
-                    command: ()=>{
-                        if(token && !isExpired){
-                            navigate("/product");
-                            setOpen(false);
-                        }else{
-                            showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
-                        }
-                    }
-                },
-                {
-                    label: 'Subscriptions',
-                    icon: 'pi pi-fw pi-shopping-cart',
-                    command: ()=>{
-                        if(token && !isExpired){
-                            navigate("/payments")
-                            setOpen(false);
-                        }else{
-                            showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
-                        }
-                    }
-                },
-                {
-                    separator: true
-                },
-                {
-                    label: 'Reports',
-                    icon: 'pi pi-fw pi-external-link'
-                },
 
-            ]
-        },
 
 
     ];
@@ -259,48 +225,47 @@ export default function AppMenu() {
     }
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex' }} className={'appBar'}>
             <CssBaseline />
-            <AppBar component="nav" style={{backgroundColor:PrimaryColor}}>
+            <AppBar component="nav" style={{backgroundColor:'forestgreen'}} >
                 <Toolbar>
-                    <div className={' flex flex-row align-items-center'}>
-                        <IconButton
-                            size="medium"
-                            edge="start"
-                            style={{color:'white'}}
-                            sx={{ mr: 2 }}
-                            onClick={()=>{
-                                if(token!==null && login!==null){
-                                    setOpen(true)
-                                }else{
-                                    showToast(toast,'error','Access denied!','Please login to have access to the menu!')
-                                }
-                            }}
-                        >
-                            { login && token && <MenuIcon style={{marginRight:10}}/>}
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                        onClick={()=>{
+                            if(token!==null && login!==null){
+                                setOpen(true)
+                            }else{
+                                showToast(toast,'error','Access denied!','Please login to have access to the menu!')
+                            }
+                        }}
+                    >
+                        { login && token && <MenuIcon style={{marginRight:10}}/>}
 
-                        </IconButton>
+                    </IconButton>
+
+                    <div className={'flex justify-content-between'} style={{width:'100%'}}>
                         <Typography
                             variant="h6"
                             component="div"
                             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                            className={'flex justify-content-center sx:col-0'}
+                            className={'flex justify-content-center'}
                         >
-                            <a className={'sx:col-0'} href={''} onClick={()=>navigate("/")} style={{color:'white'}}> {appName} </a>
+                            <a href={''} onClick={()=>navigate("/home")} style={{color:'white'}}> ZIMNAT LION INSURANCE </a>
                         </Typography>
-                    </div>
 
-
-                    <div className={'flex flex-1  justify-content-end}'}>
                         <UserMenu userMenu={userMenu} login={login} changeColor={true} />
                     </div>
                 </Toolbar>
             </AppBar>
 
-            <Menu model={userMenuItems} popup ref={userMenu} color={'green'} style={{backgroundColor: "white", color:PrimaryColor}} />
+            <Menu model={userMenuItems} popup ref={userMenu} color={'green'} style={{backgroundColor: "white", color:'var(--primary-color-text)'}} />
             <Toast ref={toast} position={'center'}/>
-            <ProfileDialog visible={profileVisible} setVisible={setProfileVisible} data={login && login!=='undefined'?JSON.parse(login):null} />
-            <ChangePasswordDialog  setChangePasswordVisible={setChangePasswordVisible} selectedUser={login && login!=='undefined'?JSON.parse(login):null}
+            <ProfileDialog visible={profileVisible} setVisible={setProfileVisible} data={JSON.parse(login)} />
+            <ChangePasswordDialog  setChangePasswordVisible={setChangePasswordVisible} selectedUser={JSON.parse(login)}
                 changePasswordVisible={changePasswordVisible} token={token} showSuccessFeedback={showSuccessFeedback} showErrorFeedback={showErrorFeedback} />
 
             <div className="card flex justify-content-center">

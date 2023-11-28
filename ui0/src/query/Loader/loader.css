@@ -1,0 +1,5 @@
+.MuiDialog-root .MuiDialog-scrollPaper .MuiDialog-paper 	.MuiDialog-paperScrollPaper
+.MuiDialog-scrollBody .MuiDialog-container .MuiDialog-paperScrollBody
+{
+    background-color: transparent!important;
+}

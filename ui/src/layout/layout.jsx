@@ -1,22 +1,20 @@
 import React from 'react';
+import AppFooterBar from "./AppFooterBar.jsx";
 import AppMenu from "./AppMenu";
-import Box from "@mui/material/Box";
+import {useNavigate} from "react-router-dom";
+import Login from "../screens/login";
+import {Container} from "@mui/material";
 
 const Layout =({children})=>{
 
     return (
            <>
-               <Box component={'div'} style={{width:'100%'}} className={' flex justify-content-center align-items-start'}>
-                   <Box component={'div'} sx={{mb:5}} className={'flex justify-content-center'}>
-                        <AppMenu />
-                   </Box>
-                   <div style={{width:'100%'}} className={'flex justify-content-center align-self-start align-items-start'} >
-                       <div className={'w-full align-items-start'}>
-                           {children}
-                       </div>
-                   </div>
-               </Box>
-
+                <AppMenu />
+                <div style={{width:'100%'}} className={'flex justify-content-center'} >
+                    <Container style={{width:'100%',padding: '5%'}}>
+                        {children}
+                    </Container>
+                </div>
            </>
 
     )
