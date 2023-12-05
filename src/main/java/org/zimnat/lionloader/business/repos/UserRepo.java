@@ -26,8 +26,8 @@ public interface UserRepo extends CrudRepository<User, String> {
     @Query("Select Distinct u from User u "+ Constants.USER_CONSTANT+" where u.active=:active Order By u.userName ASC")
     public List<User> getAllActive(@Param("active") Boolean active);
 
-    @Query("Select Distinct u from User u "+ Constants.USER_CONSTANT+" where u.userName=:userName and u.active=:active")
-    public User findByUserName(@Param("userName") String userName, @Param("active") Boolean active);
+    @Query("Select Distinct u from User u "+ Constants.USER_CONSTANT+" where u.userName=:userName")
+    public User findByUserName(@Param("userName") String userName);
 
     @Query("Select Distinct u from User u "+ Constants.USER_CONSTANT+" where u.roles in:userRoles")
     public List<User> findByUserRoles(@Param("userRoles") Set<Role> userRoles);

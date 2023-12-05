@@ -1,10 +1,7 @@
 package org.zimnat.lionloader.business.services;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.zimnat.lionloader.business.domain.Role;
-import org.zimnat.lionloader.business.domain.User;
-import org.zimnat.lionloader.business.domain.dto.RoleDTO;
-import org.zimnat.lionloader.business.domain.dto.UserDTO;
+import org.zimnat.lionloader.business.domain.Batch;
 
 import java.util.List;
 import java.util.Set;
@@ -14,22 +11,16 @@ import java.util.Set;
  * created on :: 23/3/2023
  */
 
-public interface RoleService {
+public interface BatchService {
 
-    public List<Role> getAll();
+    public List<Batch> getAll();
 
-    Role get(String id);
+    Batch get(long id);
 
-    void delete(Role t);
+    void delete(Batch t);
 
     @Transactional
-    Role save(Role t);
+    Batch save(Batch t);
 
-    public Role getByName(String name);
 
-    Boolean checkDuplicate(Role current, Role old);
-
-    public Set<Role> findByNamesIn(Set<String> names);
-
-    public Role update(String id, RoleDTO userDTO, User editor) throws Exception;
 }

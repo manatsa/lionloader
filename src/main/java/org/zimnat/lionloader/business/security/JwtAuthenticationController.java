@@ -49,8 +49,10 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "authenticate", method = RequestMethod.POST)
     @ExceptionHandler(AccountLockedException.class)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+
         SimpleDateFormat format= new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         User user=userService.findByUserName(authenticationRequest.getUsername());
+//        System.err.println(user);
         if(user!=null){
             authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
             final UserDetails userDetails = userDetailsService
@@ -61,6 +63,7 @@ public class JwtAuthenticationController {
             UserDTO userDTO=new UserDTO(user, token);
             return ResponseEntity.ok(userDTO);
         }else{
+
             return new ResponseEntity<APIResponse>(new APIResponse(HttpStatus.FORBIDDEN,"Your account is locked. Please get assistance from admin."), HttpStatus.FORBIDDEN);
 
         }

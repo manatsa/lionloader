@@ -1,15 +1,11 @@
 package org.zimnat.lionloader.business.repos;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.zimnat.lionloader.business.domain.Batch;
 import org.zimnat.lionloader.business.domain.Premium;
-import org.zimnat.lionloader.business.domain.Role;
-import org.zimnat.lionloader.utils.Constants;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author :: codemaster
@@ -17,10 +13,10 @@ import java.util.Set;
  */
 
 @Repository
-public interface PremiumRepo extends CrudRepository<Premium, Long> {
+public interface BatchRepo extends CrudRepository<Batch, Long> {
 
     @Override
-    public List<Premium> findAll();
+    public List<Batch> findAll();
 
 
 

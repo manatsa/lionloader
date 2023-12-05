@@ -1,7 +1,7 @@
-package org.apache.poi.excel.model;
+package excel.model;
 
-import org.apache.poi.excel.ExcelWriter;
-import org.apache.poi.excel.annotation.ExcelCell;
+import excel.ExcelWriter;
+import excel.annotation.ExcelCell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 

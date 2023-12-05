@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.zimnat.lionloader.business.domain.Role;
-import org.zimnat.lionloader.utils.Constants;
+import org.zimnat.lionloader.business.domain.Batch;
+import org.zimnat.lionloader.business.domain.Premium;
+import org.zimnat.lionloader.business.domain.PremiumItem;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author :: codemaster
@@ -16,19 +16,14 @@ import java.util.Set;
  */
 
 @Repository
-public interface RoleRepo extends CrudRepository<Role, String> {
+public interface PremiumRepo extends CrudRepository<PremiumItem, Long> {
 
     @Override
-    public List<Role> findAll();
+    public List<PremiumItem> findAll();
 
-    @Query("from Role p "+ Constants.USER_ROLE_CONSTANT+" where p.active=:active Order By p.name ASC")
-    public List<Role> getOptAll(@Param("active") Boolean active);
 
-    @Query("from Role p "+ Constants.USER_ROLE_CONSTANT+" where p.name=:name")
-    public Role getUserRoleByName(@Param("name") String name);
-
-    @Query("from Role p "+ Constants.USER_ROLE_CONSTANT+" where p.name in (:names)")
-    public Set<Role> findByNamesIn(@Param("names") Set<String> names);
+    @Query("from PremiumItem p left join fetch  p.batch b where b=:batch")
+    public List<PremiumItem> getByBatch(@Param("batch") Batch batch);
 
 
 }

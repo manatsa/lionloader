@@ -7,12 +7,12 @@ import org.zimnat.lionloader.utils.StringUtils;
  * created on :: 23/3/2023
  */
 
-public enum UserLevel {
-    ADMIN(1), USER(2), MANAGER(3),EXECUTIVE(4), OTHER(5);
+public enum BatchType {
+    FTP_PREMIUM(1), FLEET_PAYMENT(2), RECEIPTS(3), OTHER(4);
 
     private final Integer code;
 
-    private UserLevel(Integer code){
+    private BatchType(Integer code){
         this.code = code;
     }
 
@@ -20,17 +20,15 @@ public enum UserLevel {
         return code;
     }
 
-    public static UserLevel get(Integer code){
+    public static BatchType get(Integer code){
         switch(code){
             case 1:
-                return ADMIN;
+                return FTP_PREMIUM;
             case 2:
-                return USER;
+                return FLEET_PAYMENT;
             case 3:
-                return MANAGER;
+                return RECEIPTS;
             case 4:
-                return EXECUTIVE;
-            case 5:
                 return OTHER;
             default:
                 throw new IllegalArgumentException("Illegal parameter passed to method :" + code);

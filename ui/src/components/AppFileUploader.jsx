@@ -1,9 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {Container} from "@mui/material";
 import {useMutation} from "@tanstack/react-query";
-import doUpdate from "../query/doUpdate.js";
-import showToast from "../notifications/showToast.js";
-import Loader from "../query/Loader/Loader";
 import uploadFile from "../query/uploadFile.js";
 import {ProgressSpinner} from "primereact/progressspinner";
 

@@ -47,16 +47,16 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
 
     @SneakyThrows
     @Override
-    public UserDetails loadUserByUsername(String userName)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
-        //logger.info("Loading user record for user name: {}", userName);
+//        logger.info("Loading user record for user name: {}", userName);
         UserDetails userDetails = null;
 
         org.zimnat.lionloader.business.domain.User user = (org.zimnat.lionloader.business.domain.User) userService.findByUserName(userName);
-        //logger.info("**********************************************Hello");
+//        logger.info("******************************************\n"+user);
 
-        if(!user.getActive()){
+
+        if(user==null || !user.getActive()){
             throw new AccountLockedException("User account is locked. Please get assistance from the administrator.");
         }
         if (user != null) {

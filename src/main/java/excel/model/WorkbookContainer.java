@@ -1,13 +1,13 @@
-package org.apache.poi.excel.model;
+package excel.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.poi.excel.ExcelWriter;
-import org.apache.poi.excel.processor.writer.CellWriterFactory;
+import excel.ExcelWriter;
+import excel.processor.writer.CellWriterFactory;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple POJO that contains information of each excel workbook (file).

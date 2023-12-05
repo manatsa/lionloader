@@ -1,12 +1,12 @@
-package org.apache.poi.excel.annotation;
+package excel.annotation;
+
+import excel.ExcelWriter;
+import excel.model.ExcelCellType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.apache.poi.excel.ExcelWriter;
-import org.apache.poi.excel.model.ExcelCellType;
 
 /**
  * An annotation that can be added to a Class Attribute to provide a custom

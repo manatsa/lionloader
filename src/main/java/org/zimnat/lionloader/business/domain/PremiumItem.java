@@ -1,20 +1,13 @@
 package org.zimnat.lionloader.business.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.poiji.annotation.ExcelCellName;
 import com.poiji.annotation.ExcelRow;
+import excel.annotation.ExcelCell;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.poi.excel.annotation.ExcelCell;
-import org.apache.poi.excel.annotation.ExcelSheet;
-import org.apache.poi.excel.model.ExcelCellType;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Date;
+
 
 /**
  * @author :: codemaster
@@ -25,126 +18,121 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-//@ExcelSheet("Sheet1")
 //@ExcelSheet(name = "Sheet1")
-public class Premium {
+public class PremiumItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ExcelRow
-    @ExcelCell(header = "ROW_NUM", type = ExcelCellType.INTEGER)
     private long premiumRow;
 
-    @ExcelCellName("Customer_Name")
-    @ExcelCell(header = "FULLNAME")
+    @ExcelCell(header="Customer_Name")
     private String fullName;
 
-    @ExcelCell(header = "FIRSTNAME")
-    private String firstName;
-
-    @ExcelCell(header = "LASTNAME")
-    private String lastName;
-
-    @ExcelCellName("ID")
-    @ExcelCell(header = "RowID", type = ExcelCellType.INTEGER)
+    @ExcelCell(header="RowId")
     private long rowId;
 
-    @ExcelCell(header = "RowNumber", type = ExcelCellType.INTEGER)
-    private long rowNum;
-
-    @ExcelCellName("Birth_Date")
-    @ExcelCell(header = "DATE_OF_BIRTH", type = ExcelCellType.DATE)
+    @ExcelCell(header = "Birth_Date")
     private String dob;
 
-    @ExcelCellName("Customer_Phone")
-    @ExcelCell(header = "MOBILE_PHONE")
+    @ExcelCell(header = "Customer_Phone")
     private long phone;
 
-    @ExcelCellName("Customer_Add1")
-    @ExcelCell(header = "CUSTOMER_ADDRESS")
+    @ExcelCell(header = "Customer_Add1")
     private String customerAddress;
 
-    @ExcelCellName("Customer_Add2")
-    private String address2;
-
-    @ExcelCellName("Status")
-    @ExcelCell(header = "STATUS")
+    @ExcelCell(header = "Status")
     private String premiumStatus;
 
-    @ExcelCellName("Make")
-    @ExcelCell(header = "MAKE")
+    @ExcelCell(header = "Make")
     private String vehicleMake;
 
-    @ExcelCellName("Model")
-    @ExcelCell(header = "MODEL")
+    @ExcelCell(header = "Model")
     private String vehicleModel;
 
-    @ExcelCellName("VRN")
-    @ExcelCell(header = "VEHICLE_REG_NO")
+    @ExcelCell(header = "VehicleRegNo")
     private String vehicleRegNo;
 
-    @ExcelCellName("Year_Manufacture")
-    @ExcelCell(header = "MANUFACTURE_YEAR", type = ExcelCellType.INTEGER)
+    @ExcelCell(header = "Year_Manufacture")
     private String manufactureYear;
 
-    @ExcelCellName("Start_Date")
-    @ExcelCell(header = "START_DATE", type = ExcelCellType.DATE)
+    @ExcelCell(header = "Start_Date")
     private String coverStartDate;
 
-    @ExcelCellName("End_Date")
-    @ExcelCell(header = "END_DATE", type = ExcelCellType.DATE)
+    @ExcelCell(header = "End_Date")
     private String coverEndDate;
 
-    @ExcelCellName("Policy_Cover")
-    @ExcelCell(header = "SUM_INSURED", type = ExcelCellType.INTEGER)
+    @ExcelCell(header = "Policy_Cover")
     private double sumInsured;
 
-    @ExcelCellName("Stamp_Duty")
-    @ExcelCell(header = "STAMP_DUTY", type = ExcelCellType.DECIMAL)
+    @ExcelCell(header = "Stamp_Duty")
     private String duty;
 
-    @ExcelCellName("Government_Levy")
-    @ExcelCell(header = "LEVY", type = ExcelCellType.DECIMAL)
+    @ExcelCell(header = "Government_Levy")
     private String levy;
 
-    @ExcelCellName("RTA_Amount")
-    @ExcelCell(header = "RTA_AMOUNT", type = ExcelCellType.DECIMAL)
+    @ExcelCell(header = "RTA_Amount")
     private String rtaAmount;
 
-    @ExcelCellName("Premium_Collected")
-    @ExcelCell(header = "PREMIUM", type = ExcelCellType.DECIMAL)
+    @ExcelCell(header = "Premium_Collected")
     private double premium;
 
-    @ExcelCellName("Vehicle_Type")
-    @ExcelCell(header = "VEHICLE_TYPE")
+    @ExcelCell(header = "Vehicle_Type")
     private String vehicleType;
 
-    @ExcelCellName("Payment Method")
-    @ExcelCell(header = "PAY_METHOD")
+    @ExcelCell(header = "Payment Method")
     private String paymentMethod;
 
-    @ExcelCellName("Location")
-    @ExcelCell(header = "BRANCH_CODE")
+    @ExcelCell(header = "Location")
     private String branchCode;
 
-    @ExcelCell(header = "AGENT_CODE")
-    private String agent;
-
-    @ExcelCell(header = "FAILURE_REASON")
-    private String failureReason;
-
-
-    @ExcelCellName("Policy_No")
-    @ExcelCell(header = "ALTERNATIVE_REF")
+    @ExcelCell(header = "Policy_No")
     private String alternativeRef;
 
+    @ExcelCell(header = "Policy_No")
+    private String firstName;
+
+    @ExcelCell(header = "Policy_No")
+    private String lastName;
+
+    @ExcelCell(header = "Policy_No")
+    private String agent;
+
+    @Transient
     private Boolean hasError=Boolean.FALSE;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "batch_id", nullable = false)
+    private String errorReason;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "batch_id", referencedColumnName = "id")
     private Batch batch;
+
+    public PremiumItem createPremiumItem(Premium p){
+        this.premium=p.getPremium();
+        this.customerAddress=p.getAddress()+" "+p.getAddress2();
+        this.alternativeRef=p.getAlternativeRef();
+        this.coverEndDate=p.getCoverEndDate();
+        this.dob=p.getDob();
+        this.duty=p.getDuty();
+        this.fullName=p.getFullName();
+        this.levy=p.getLevy();
+        this.phone=p.getPhone();
+        this.manufactureYear=p.getManufactureYear();
+        this.rowId=p.getRowId();
+        this.paymentMethod=p.getPaymentMethod();
+        this.vehicleRegNo=p.getVehicleRegNo();
+        this.vehicleMake=p.getMake();
+        this.vehicleModel=p.getModel();
+        this.vehicleType=p.getVehicleType();
+        this.coverStartDate=p.getCoverStartDate();
+        this.rtaAmount=p.getRtaAmount();
+        this.sumInsured=p.getSumInsured();
+        this.premiumRow=p.getRow();
+        this.errorReason=p.getReason();
+        return this;
+    }
 
 
 }

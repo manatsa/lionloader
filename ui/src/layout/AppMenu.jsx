@@ -100,7 +100,7 @@ export default function AppMenu() {
         {
             label: 'System Admin',
             icon: 'pi pi-fw pi-slack',
-            expanded:JSON.parse(login)?.roles?.includes('ADMIN'),
+            // expanded:JSON.parse(login)?.roles?.includes('ADMIN'),
             items: [
                 {
                     label: 'Users',
@@ -178,30 +178,30 @@ export default function AppMenu() {
                         }
                     }
                 },
-                {
-                    label: 'Bank Bulk Upload',
-                    icon: 'pi pi-fw pi-server',
-                    command: ()=>{
-                        if(token && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
-                            navigate("/category")
-                            setOpen(false)
-                        }else{
-                            showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
-                        }
-                    }
-                },
-                {
-                    label: 'Broker Bulk Upload',
-                    icon: 'pi pi-fw pi-flag',
-                    command: ()=>{
-                        if(token && !isExpired){
-                            navigate("/product")
-                            setOpen(false)
-                        }else{
-                            showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
-                        }
-                    }
-                },
+                // {
+                //     label: 'Bank Bulk Upload',
+                //     icon: 'pi pi-fw pi-server',
+                //     command: ()=>{
+                //         if(token && !isExpired && JSON.parse(login)?.roles?.includes('ADMIN')){
+                //             navigate("/category")
+                //             setOpen(false)
+                //         }else{
+                //             showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
+                //         }
+                //     }
+                // },
+                // {
+                //     label: 'Broker Bulk Upload',
+                //     icon: 'pi pi-fw pi-flag',
+                //     command: ()=>{
+                //         if(token && !isExpired){
+                //             navigate("/product")
+                //             setOpen(false)
+                //         }else{
+                //             showToast(toast,"error", "Error 401: Access Denied","You are not authorized to access this resource, please login with privileged account.");
+                //         }
+                //     }
+                // },
                 {
                     separator: true
                 },

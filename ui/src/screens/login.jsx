@@ -66,6 +66,7 @@ export default function Login() {
         event.preventDefault();
         const datas = new FormData(event.currentTarget);
         const login={ username: datas.get("username"),password: datas.get("password")};
+        console.log(login)
         setUsername(datas.get("username"));
         mutation.mutate({ id: 'login'+login['username'], data:login})
     };

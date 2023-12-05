@@ -1,17 +1,17 @@
-package org.apache.poi.excel.processor.writer.atomic;
+package excel.processor.writer.atomic;
+
+import excel.model.ExcelCellType;
+import excel.model.WorkbookContainer;
+import excel.processor.reader.FieldReader;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.function.BiConsumer;
-
-import org.apache.poi.excel.model.ExcelCellType;
-import org.apache.poi.excel.model.WorkbookContainer;
-import org.apache.poi.excel.processor.reader.FieldReader;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GenericCellWriter extends FieldReader {
 	private final static Logger log = LoggerFactory.getLogger(GenericCellWriter.class);

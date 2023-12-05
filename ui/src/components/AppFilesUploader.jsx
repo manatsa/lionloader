@@ -11,7 +11,6 @@ import {ProgressSpinner} from "primereact/progressspinner";
 import {OutTable, ExcelRenderer} from 'react-excel-renderer';
 import './excel.css';
 import {SpeedDial} from "primereact/speeddial";
-import {InputText} from "primereact/inputtext";
 import {Dropdown} from "primereact/dropdown";
 
 const  AppFilesUploader = ({token}) =>{
@@ -27,8 +26,8 @@ const  AppFilesUploader = ({token}) =>{
     const [rowsNum, setRowsNum] = useState(0);
     const [agent, setAgent]= useState(null)
     const agents=[
-        {label:'ALERTSURE', code:'T3'},
-        {label: 'BANCABC', code: 'T7'}
+        {label:'ALERTSURE CONSULTANC', code:'T3'},
+        {label: 'BANCABCHARARE', code: 'T7'}
     ]
 
     const {mutate, error,data, isLoading, isError, isSuccess} = useMutation({
@@ -182,38 +181,46 @@ const  AppFilesUploader = ({token}) =>{
     const doUpload=()=>{
         setIndicator(true)
         let filename=file?.name;
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append("agent", agent?.code)
-        console.log(agent?.code)
-        setColumns([]);
-        setRows([]);
-        setFile(null)
-        setShowHeader(true)
-        // mutate({id:null, file:formData})
-        fetch(`/api/upload/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + token,
-            },
-            body: formData,
-        }).then(response=>response?.blob())
-            .then(blob=>{
-            try {
-                const blobUrl = window.URL.createObjectURL(blob)
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = blobUrl;
-                a.download = "Formated_"+filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(blobUrl);
-                setIndicator(false)
-            }catch(e){
-                console.log( e);
-                setIndicator(false)
-            }
-        })
+        if(agent?.code) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append("agent", agent?.code)
+            formData.append("broker", agent?.label)
+            setColumns([]);
+            setRows([]);
+            setFile(null)
+            setShowHeader(true)
+            // mutate({id:null, file:formData})
+            fetch(`/api/upload/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': "Bearer " + token,
+                },
+                body: formData,
+            }).then(response => response?.blob())
+                .then(blob => {
+                    try {
+                        const blobUrl = window.URL.createObjectURL(blob)
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = blobUrl;
+                        a.download = agent?.label.replace(" ","_")+"_"+ filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(blobUrl);
+                        setIndicator(false)
+                    } catch (e) {
+                        console.log(e);
+                        setIndicator(false)
+                    }
+                })
+        }else{
+            showToast(toast,"error","Undefined Agent","Please select and agent first!")
+            setFile(null)
+            setIndicator(false)
+            setRows([])
+            setColumns([])
+        }
 
     }
 

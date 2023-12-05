@@ -2,29 +2,25 @@ package org.zimnat.lionloader.business.services;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.zimnat.lionloader.business.domain.Batch;
+import org.zimnat.lionloader.business.domain.PremiumItem;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author :: codemaster
  * created on :: 23/3/2023
  */
 
-public interface BatchService {
+public interface PremiumService {
 
-    public List<Batch> getAll();
+    public List<PremiumItem> getAll();
 
-    Batch get(String id);
+    PremiumItem get(long id);
 
-    void delete(Batch t);
+    void delete(PremiumItem t);
 
     @Transactional
-    Batch save(Batch t);
+    PremiumItem save(PremiumItem t);
 
-    public Batch getByName(String name);
-
-    Boolean checkDuplicate(Batch current, Batch old);
-
-    public Set<Batch> findByNamesIn(Set<String> names);
+    List<PremiumItem> getByBatch(Batch batch);
 }

@@ -1,11 +1,11 @@
-package org.apache.poi.excel.annotation;
+package excel.annotation;
+
+import excel.ExcelWriter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.apache.poi.excel.ExcelWriter;
 
 /**
  * The class level annotation that can be added to a POJO. Use this to define a
