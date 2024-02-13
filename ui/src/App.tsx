@@ -19,7 +19,7 @@ function App() {
     <>
 
                 <Routes>
-                    <Route path="/home" element={<Home />} />
+                    <Route path="/home" element={<Icecash />} />
                     <Route path="/icecash" element={<Icecash />} />
                     <Route path="/renewals" element={<Renewals />} />
                     <Route path="/payments" element={<Payments />} />
@@ -28,7 +28,7 @@ function App() {
                     <Route path="/roles" element={<Roles />} />
                     <Route path="/privileges" element={<Privileges />} />
                     <Route path="/settings" element={<Settings />} />
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Icecash />} />
                 </Routes>
 
 

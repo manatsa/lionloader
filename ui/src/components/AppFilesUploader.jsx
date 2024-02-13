@@ -20,14 +20,20 @@ const  AppFilesUploader = ({token}) =>{
     const [columns, setColumns] = useState(null);
     const [showHeader, setShowHeader] = useState(true);
     const fileUploadRef = useRef(null);
-    const fileMaxSize=5000000;
+    const fileMaxSize=50000000;
     const toast=useRef(null);
     const [file, setFile]= useState(null)
     const [rowsNum, setRowsNum] = useState(0);
     const [agent, setAgent]= useState(null)
+    const [currency, setCurrency]= useState({label:'USD', code:'USD'})
     const agents=[
         {label:'ALERTSURE CONSULTANC', code:'T3'},
         {label: 'BANCABCHARARE', code: 'T7'}
+    ]
+
+    const currencies=[
+        {label:'USD', code:'USD'},
+        {label: 'ZWL', code: 'ZWL'}
     ]
 
     const {mutate, error,data, isLoading, isError, isSuccess} = useMutation({
@@ -98,17 +104,25 @@ const  AppFilesUploader = ({token}) =>{
                 {uploadButton}
                 {cancelButton}
                 <div className="flex align-items-center gap-3 ml-auto">
-                    {!file &&
-                        <span className="p-float-label">
-                            <Dropdown autoFocus  id={'agents'} value={agent} onChange={(e) => setAgent(e.value)} options={agents} optionLabel="label"
-                                      filter showClear placeholder="Select an agent" className="w-full md:w-14rem" />
-                            <label htmlFor="agents">Select Agent</label>
-                        </span>
+                    {!file &&(
+                        <div className={'flex align-items-center justify-items-center'}>
+                            <span className="p-float-label">
+                                <Dropdown autoFocus  id={'agents'} value={agent} onChange={(e) => setAgent(e.value)} options={agents} optionLabel="label"
+                                          filter showClear placeholder="Select an agent" className="w-full md:w-14rem" />
+                                <label htmlFor="agents">Select Agent</label>
+                            </span>
+                            <span className="p-float-label ml-3">
+                                <Dropdown autoFocus  id={'agents'} value={currency} onChange={(e) => setCurrency(e.value)} options={currencies} optionLabel="label"
+                                filter showClear placeholder="Select currency" className="w-full md:w-14rem" />
+                                <label htmlFor="agents">Select Currency</label>
+                            </span>
+                        </div>
+                        )
                         }
 
                         {file && <span style={{fontWeight: "bolder"}}>Last Edited::{file?.lastModifiedDate?.toLocaleString()}</span>}
                     {rows?.length>0 && <span> Size::{(rows?.length -1)} items </span>}
-                    <span style={{fontWeight:"bolder"}}>{formatedValue} / 5 MB</span>
+                    <span style={{fontWeight:"bolder"}}>{formatedValue} / 50 MB</span>
                     <ProgressBar value={value} showValue={false} style={{width: '10rem', height: '12px'}}/>
                 </div>
             </div>
@@ -166,7 +180,7 @@ const  AppFilesUploader = ({token}) =>{
             }
             else{
 
-                // console.log('Rows::','\n',resp.rows)
+                // console.log(  resp.rows)
                     setColumns(resp.cols);
                     setRows(resp.rows);
                     setIndicator(false)
@@ -186,6 +200,7 @@ const  AppFilesUploader = ({token}) =>{
             formData.append('file', file);
             formData.append("agent", agent?.code)
             formData.append("broker", agent?.label)
+            formData.append("currency", currency?.code)
             setColumns([]);
             setRows([]);
             setFile(null)
@@ -260,13 +275,13 @@ const  AppFilesUploader = ({token}) =>{
             <Toast ref={toast}/>
             {indicator && <ProgressSpinner title={'Please wait...'} />}
             <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-            <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
+            <Tooltip target=".custom-upload-btn" content="Preview" position="bottom" />
             <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
                <div className="grid" style={{width:'100%'}}>
                    {showHeader &&
                            <div className="col-12">
-                               <FileUpload ref={fileUploadRef} name="demo[]" accept={['.csv,.xls, .xlsx']} maxFileSize={fileMaxSize}
+                               <FileUpload ref={fileUploadRef} name="demo[]" accept={['.xls']} maxFileSize={fileMaxSize}
                                    onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear}
                                    onClear={onTemplateClear}
                                    headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}

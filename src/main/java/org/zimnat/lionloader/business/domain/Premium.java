@@ -8,6 +8,7 @@ import excel.model.ExcelCellType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,9 +22,9 @@ import java.util.Date;
  * Package Name :: org.zimnat.lionloader.business.domain
  */
 @Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-//@ExcelSheet("Sheet1")
 @ExcelSheet(name = "Sheet1")
 public class Premium {
 
@@ -113,6 +114,9 @@ public class Premium {
     @ExcelCell(header = "ALTERNATIVE_REF")
     private String alternativeRef;
 
+    private double periods;
+    private Double minim;
+    private double yearPremium;
     private Boolean hasError=Boolean.FALSE;
 
 

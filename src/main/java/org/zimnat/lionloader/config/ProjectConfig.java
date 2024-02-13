@@ -17,7 +17,7 @@ import java.sql.SQLException;
 public class ProjectConfig {
 
     @Bean(name = "ZWL")
-    public Connection createConnection() throws SQLException{
+    public Connection createZWLConnection() throws SQLException{
         String connectionUrl =
                 "jdbc:sqlserver://10.200.4.103:1433;"
                         + "database=ZIMNAT;"
@@ -28,9 +28,27 @@ public class ProjectConfig {
                         + "loginTimeout=30;";
 
        Connection connection = DriverManager.getConnection(connectionUrl);
-        System.err.println(" ----- connected to database to retrieve policies inorder to update excel spreadsheet ---- ");
+        System.err.println(" ----- connected to ZWL database to retrieve policies inorder to update excel spreadsheet ---- ");
 
        return connection;
+
+    }
+
+    @Bean(name = "USD")
+    public Connection createUSDConnection() throws SQLException{
+        String connectionUrl =
+                "jdbc:sqlserver://10.200.4.103:1433;"
+                        + "database=ZIMNATUAT116;"
+                        + "user=sa;"
+                        + "password=P@8812345;"
+                        + "encrypt=false;"
+                        + "trustServerCertificate=true;"
+                        + "loginTimeout=30;";
+
+        Connection connection = DriverManager.getConnection(connectionUrl);
+        System.err.println(" ----- connected to USD database to retrieve policies inorder to update excel spreadsheet ---- ");
+
+        return connection;
 
     }
 }
